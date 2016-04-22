@@ -133,8 +133,11 @@ const addElementStyles = (oldProps) => {
   }
 }
 
+// добавляем React-элементу header класс .header
 export const Header = tx({ className: 'header' })('header')
+// добавляем React-элементу h1 класс .header__title
 export const Title = tx([{ name: 'title' }, addElementStyles])('h1')
+// добавляем React-элементу h2 класс .header__title
 export const Subtitle = tx([{ name: 'subtitle' }, addElementStyles])('h2')
 ```
 
@@ -155,11 +158,8 @@ import tx from 'transform-props-with'
 // здесь header — название BEM блока
 const dumbHeader = dumbBem('header')
 
-// добавляем React-элементу header класс .header
 const Header = tx(dumbHeader)('header')
-// добавляем React-элементу h1 класс .header__title
 const Title = tx([dumbHeader, { element: 'title' }])('h1')
-// добавляем React-элементу h2 класс .header__title
 const Subtitle = tx([dumbHeader, { element: 'subtitle' }])('h2')
 
 export default ({ modifier, title, subtitle }) => (
