@@ -1,4 +1,4 @@
-*TL;DR*: [dumb-bem][1] — библиотека для простого использования BEM с React-компонентами.
+*TL;DR*: [dumb-bem][1] — библиотека для упрощения использования BEM с React-компонентами.
 
 ## Введение
 
@@ -6,21 +6,22 @@
 
 И если про каждый из этих подходов уже было сказано немало, я хочу поговорить про то, как совмещать их в разработке.
 
-Мы в Wimdu используем правила по наименованию компонентов из БЭМ и некоторые концепты SMACSS.
+Мы в Wimdu используем правила по наименованию компонентов из БЭМ и некоторые концепты [SMACSS][10].
 
 Например, типичный компонент выглядит так:
 ```html
 <header className='header header--landing'>
-  <h1 className='header__title'>...</h1>
-  <h2 className='header__subtitle is-hidden'>...</h2>
+  <h1 className='header__title'>…</h1>
+  <h2 className='header__subtitle is-hidden'>…</h2>
 </header>
 ```
 
 Этот компонент состоит из:
 
-*   блока `header` с модификатором `landing`
-*   элемента `header__title`
-*   элемента `header__subtitle` с состоянием `is-hidden`
+* блока `header` с модификатором `landing`
+* элемента `header__title`
+* элемента `header__subtitle` с состоянием `is-hidden`
+
 
 ## Компоненты
 
@@ -52,8 +53,8 @@ import Header from 'components/header'
 ReactDOM.render(
   <Header
     modifier='landing'
-    title='City Apartments'
-    subtitle='Over 5 Million Nights Booked'
+    title='Городские апартаменты'
+    subtitle='Более 5 миллионов резерваций'
   />
 , node)
 
@@ -61,8 +62,8 @@ ReactDOM.render(
 ReactDOM.render(
   <Header
     modifier='about'
-    title='About Wimdu'
-    subtitle='Meet our team and learn about what we do'
+    title='Про Wimdu'
+    subtitle='Познакомьтесь с нашей командой и посмотрите, что мы умеем'
   />
 , node)
 ```
@@ -84,9 +85,9 @@ export default ({ modifier, title, subtitle }) => (
 )
 ```
 
-
 Получили то, что и хотели — компонент, готовый к использованию в разных контекстах. Решение рабочее, хотя и выглядит довольно неаккуратно.
 Если нам предстоит написать несколько десятков таких компонентов, лучше придумать что-то более элегантное.
+
 
 ## Удобство использования
 
@@ -106,6 +107,7 @@ export default ({ modifier, title, subtitle }) => (
   </Header>
 )
 ```
+
 То, что нужно! Похоже на слегка параметризованный html-компонент из начала статьи.
 
 Теперь определим вынесенные наружу элементы.
@@ -145,6 +147,7 @@ export const Subtitle = tx([{ name: 'subtitle' }, addElementStyles])('h2')
 
 Теперь при передаче в наши атомарные компоненты свойства `modifier` или `hidden` для них будет сгенерирован соответствующий класс.
 
+
 ## Встречаем dumb-bem
 
 [dumb-bem][1] — это библиотека, которую мы написали для создания атомарных React компонентов с BEM/SMACSS правилами по наименованию классов.
@@ -183,3 +186,4 @@ export default ({ modifier, title, subtitle }) => (
  [7]: https://github.com/robinpokorny/transform-props-with
  [8]: https://www.npmjs.com/package/dumb-bem
  [9]: https://github.com/agudulin/dumb-bem/blob/master/README.md
+ [10]: https://smacss.com/
