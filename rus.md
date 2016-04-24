@@ -7,12 +7,12 @@
 Мы в [Wimdu][11] используем правила по наименованию компонентов из БЭМ и некоторые концепты [SMACSS][10].
 
 Например, типичный компонент выглядит так:
-```html
-<header className='header header--landing'>
-  <h1 className='header__title'>…</h1>
-  <h2 className='header__subtitle is-hidden'>…</h2>
-</header>
-```
+
+    <header className='header header--landing'>
+        <h1 className='header__title'>…</h1>
+        <h2 className='header__subtitle is-hidden'>…</h2>
+    </header>
+
 
 Этот компонент состоит из:
 
@@ -29,59 +29,55 @@
 
 Начнём с простого:
 
-```js
-// components/header/index.js
 
-export default ({ modifier, title, subtitle }) => (
-  <header className=`header header--${modifier}`>
-    <h1 className='header__title'>{ title }</h1>
-    <h2 className=`header__subtitle ${!subtitle ? 'is-hidden' : ''}`>
-      { subtitle }
-    </h2>
-  </header>
-)
-```
+    // components/header/index.js
+     
+    export default ({ modifier, title, subtitle }) => (
+      <header className=`header header--${modifier}`>
+        <h1 className='header__title'>{ title }</h1>
+        <h2 className=`header__subtitle ${!subtitle ? 'is-hidden' : ''}`>
+          { subtitle }
+        </h2>
+      </header>
+    )
 
 Отлично, теперь можно передавать различные параметры в получившийся компонент и использовать его на разных страницах:
 
-```js
-import Header from 'components/header'
-
-// например, поместим компонент на главную страницу
-ReactDOM.render(
-  <Header
-    modifier='landing'
-    title='Городские апартаменты'
-    subtitle='Более 5 миллионов резерваций'
-  />
-, node)
-
-// или на страницу /about
-ReactDOM.render(
-  <Header
-    modifier='about'
-    title='Про Wimdu'
-    subtitle='Познакомьтесь с нашей командой и посмотрите, что мы умеем'
-  />
-, node)
-```
+    import Header from 'components/header'
+     
+    // например, поместим компонент на главную страницу
+    ReactDOM.render(
+      <Header
+        modifier='landing'
+        title='Городские апартаменты'
+        subtitle='Более 5 миллионов резерваций'
+      />
+    , node)
+     
+    // или на страницу /about
+    ReactDOM.render(
+      <Header
+        modifier='about'
+        title='Про Wimdu'
+        subtitle='Познакомьтесь с нашей командой и посмотрите, что мы умеем'
+      />
+    , node)
 
 Сделаем модификатор необязательным. Чтобы не писать кучу тернарных операторов, возьмем удобную библиотеку для работы с классами [classnames][6].
 
-```js
-// components/header/index.js
 
-import cx from 'classnames'
-
-export default ({ modifier, title, subtitle }) => (
-  <header className={cx('header', { [`header--${modifier}`]: modifier })}>
-    <h1 className='header__title'>{ title }</h1>
-    <h2 className={cx('header__subtitle', { 'is-hidden': subtitle })}>
-      { subtitle }
-    </h2>
-  </header>
-)
-```
+    // components/header/index.js
+     
+    import cx from 'classnames'
+     
+    export default ({ modifier, title, subtitle }) => (
+      <header className={cx('header', { [`header--${modifier}`]: modifier })}>
+        <h1 className='header__title'>{ title }</h1>
+        <h2 className={cx('header__subtitle', { 'is-hidden': subtitle })}>
+          { subtitle }
+        </h2>
+      </header>
+    )
 
 Получили то, что и хотели — компонент, готовый к использованию в разных контекстах. Решение рабочее, хотя и выглядит довольно неаккуратно.
 Если нам предстоит написать несколько десятков таких компонентов, лучше придумать что-то более элегантное.
@@ -93,18 +89,16 @@ export default ({ modifier, title, subtitle }) => (
 
 Попробуем вынести элементы `Header`, `Title` и `Subtitle` из компонента наружу:
 
-```js
-// components/header/index.js
-
-import { Header, Title, Subtitle } from './elements'
-
-export default ({ modifier, title, subtitle }) => (
-  <Header modifier={modifier}>
-    <Title>{ title }</Title>
-    <Subtitle hidden={!subtitle}>{ subtitle }</Subtitle>
-  </Header>
-)
-```
+    // components/header/index.js
+     
+    import { Header, Title, Subtitle } from './elements'
+     
+    export default ({ modifier, title, subtitle }) => (
+      <Header modifier={modifier}>
+        <Title>{ title }</Title>
+        <Subtitle hidden={!subtitle}>{ subtitle }</Subtitle>
+      </Header>
+    )
 
 То, что нужно! Похоже на слегка параметризованный html-компонент из начала статьи.
 
@@ -114,32 +108,30 @@ export default ({ modifier, title, subtitle }) => (
 
 Для изменения свойств будем использовать библиотеку [transform-props-with][7]:
 
-```js
-// components/header/elements.js
-
-import cx from 'classnames'
-import tx from 'transform-props-with'
-
-const addElementStyles = (oldProps) => {
-  const { hidden, modifier, name, ...props } = oldProps
-
-  return {
-    className: cx({
-      [`header__${name}`]: name,
-      [`header__${name}--${modifier}`]: name && modifier,
-      ['is-hidden']: hidden
-    }),
-    ...props
-  }
-}
-
-// добавляем React-элементу header класс .header
-export const Header = tx({ className: 'header' })('header')
-// добавляем React-элементу h1 класс .header__title
-export const Title = tx([{ name: 'title' }, addElementStyles])('h1')
-// добавляем React-элементу h2 класс .header__subtitle
-export const Subtitle = tx([{ name: 'subtitle' }, addElementStyles])('h2')
-```
+    // components/header/elements.js
+     
+    import cx from 'classnames'
+    import tx from 'transform-props-with'
+     
+    const addElementStyles = (oldProps) => {
+      const { hidden, modifier, name, ...props } = oldProps
+     
+      return {
+        className: cx({
+          [`header__${name}`]: name,
+          [`header__${name}--${modifier}`]: name && modifier,
+          ['is-hidden']: hidden
+        }),
+        ...props
+      }
+    }
+     
+    // добавляем React-элементу header класс .header
+    export const Header = tx({ className: 'header' })('header')
+    // добавляем React-элементу h1 класс .header__title
+    export const Title = tx([{ name: 'title' }, addElementStyles])('h1')
+    // добавляем React-элементу h2 класс .header__subtitle
+    export const Subtitle = tx([{ name: 'subtitle' }, addElementStyles])('h2')
 
 Фактически, мы декорировали React-элементы `header`, `h1` и `h2`.
 
@@ -152,24 +144,22 @@ export const Subtitle = tx([{ name: 'subtitle' }, addElementStyles])('h2')
 
 Передавая имя блока в фyнкцию `dumbBem`, вы получаете функцию-декоратор, которая меняет свойства у React-элемента.
 
-```js
-import dumbBem from 'dumb-bem'
-import tx from 'transform-props-with'
-
-// здесь header — название BEM блока
-const dumbHeader = dumbBem('header')
-
-const Header = tx(dumbHeader)('header')
-const Title = tx([dumbHeader, { element: 'title' }])('h1')
-const Subtitle = tx([dumbHeader, { element: 'subtitle' }])('h2')
-
-export default ({ modifier, title, subtitle }) => (
-  <Header modifier={modifier}>
-    <Title>{ title }</Title>
-    <Subtitle hidden={!subtitle}>{ subtitle }</Subtitle>
-  </Header>
-)
-```
+    import dumbBem from 'dumb-bem'
+    import tx from 'transform-props-with'
+     
+    // здесь header — название BEM блока
+    const dumbHeader = dumbBem('header')
+     
+    const Header = tx(dumbHeader)('header')
+    const Title = tx([dumbHeader, { element: 'title' }])('h1')
+    const Subtitle = tx([dumbHeader, { element: 'subtitle' }])('h2')
+     
+    export default ({ modifier, title, subtitle }) => (
+      <Header modifier={modifier}>
+        <Title>{ title }</Title>
+        <Subtitle hidden={!subtitle}>{ subtitle }</Subtitle>
+      </Header>
+    )
 
 Страницы проекта: [github][1] и [npm][8].
 
