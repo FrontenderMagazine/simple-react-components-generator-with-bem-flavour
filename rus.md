@@ -50,7 +50,7 @@
         <Header
             modifier='landing'
             title='Городские апартаменты'
-            subtitle='Более 5 миллионов резерваций'
+            subtitle='Более 5 миллионов бронирований'
         />
     , node)
      
