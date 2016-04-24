@@ -33,12 +33,12 @@
     // components/header/index.js
      
     export default ({ modifier, title, subtitle }) => (
-      <header className=`header header--${modifier}`>
-        <h1 className='header__title'>{ title }</h1>
-        <h2 className=`header__subtitle ${!subtitle ? 'is-hidden' : ''}`>
-          { subtitle }
-        </h2>
-      </header>
+        <header className=`header header--${modifier}`>
+            <h1 className='header__title'>{ title }</h1>
+            <h2 className=`header__subtitle ${!subtitle ? 'is-hidden' : ''}`>
+                { subtitle }
+            </h2>
+        </header>
     )
 
 Отлично, теперь можно передавать различные параметры в получившийся компонент и использовать его на разных страницах:
@@ -47,20 +47,20 @@
      
     // например, поместим компонент на главную страницу
     ReactDOM.render(
-      <Header
-        modifier='landing'
-        title='Городские апартаменты'
-        subtitle='Более 5 миллионов резерваций'
-      />
+        <Header
+            modifier='landing'
+            title='Городские апартаменты'
+            subtitle='Более 5 миллионов резерваций'
+        />
     , node)
      
     // или на страницу /about
     ReactDOM.render(
-      <Header
-        modifier='about'
-        title='Про Wimdu'
-        subtitle='Познакомьтесь с нашей командой и посмотрите, что мы умеем'
-      />
+        <Header
+            modifier='about'
+            title='Про Wimdu'
+            subtitle='Познакомьтесь с нашей командой и посмотрите, что мы умеем'
+        />
     , node)
 
 Сделаем модификатор необязательным. Чтобы не писать кучу тернарных операторов, возьмем удобную библиотеку для работы с классами [classnames][6].
@@ -71,12 +71,12 @@
     import cx from 'classnames'
      
     export default ({ modifier, title, subtitle }) => (
-      <header className={cx('header', { [`header--${modifier}`]: modifier })}>
-        <h1 className='header__title'>{ title }</h1>
-        <h2 className={cx('header__subtitle', { 'is-hidden': subtitle })}>
-          { subtitle }
-        </h2>
-      </header>
+        <header className={cx('header', { [`header--${modifier}`]: modifier })}>
+            <h1 className='header__title'>{ title }</h1>
+            <h2 className={cx('header__subtitle', { 'is-hidden': subtitle })}>
+                { subtitle }
+            </h2>
+        </header>
     )
 
 Получили то, что и хотели — компонент, готовый к использованию в разных контекстах. Решение рабочее, хотя и выглядит довольно неаккуратно.
@@ -94,10 +94,10 @@
     import { Header, Title, Subtitle } from './elements'
      
     export default ({ modifier, title, subtitle }) => (
-      <Header modifier={modifier}>
-        <Title>{ title }</Title>
-        <Subtitle hidden={!subtitle}>{ subtitle }</Subtitle>
-      </Header>
+        <Header modifier={modifier}>
+            <Title>{ title }</Title>
+            <Subtitle hidden={!subtitle}>{ subtitle }</Subtitle>
+        </Header>
     )
 
 То, что нужно! Похоже на слегка параметризованный html-компонент из начала статьи.
@@ -114,16 +114,16 @@
     import tx from 'transform-props-with'
      
     const addElementStyles = (oldProps) => {
-      const { hidden, modifier, name, ...props } = oldProps
+        const { hidden, modifier, name, ...props } = oldProps
      
-      return {
-        className: cx({
-          [`header__${name}`]: name,
-          [`header__${name}--${modifier}`]: name && modifier,
-          ['is-hidden']: hidden
-        }),
-        ...props
-      }
+        return {
+            className: cx({
+                [`header__${name}`]: name,
+                [`header__${name}--${modifier}`]: name && modifier,
+                ['is-hidden']: hidden
+            }),
+            ...props
+        }
     }
      
     // добавляем React-элементу header класс .header
@@ -155,10 +155,10 @@
     const Subtitle = tx([dumbHeader, { element: 'subtitle' }])('h2')
      
     export default ({ modifier, title, subtitle }) => (
-      <Header modifier={modifier}>
-        <Title>{ title }</Title>
-        <Subtitle hidden={!subtitle}>{ subtitle }</Subtitle>
-      </Header>
+        <Header modifier={modifier}>
+            <Title>{ title }</Title>
+            <Subtitle hidden={!subtitle}>{ subtitle }</Subtitle>
+        </Header>
     )
 
 Страницы проекта: [github][1] и [npm][8].
